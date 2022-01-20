@@ -29,8 +29,63 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 4
+# https://stackoverflow.com/questions/68746327/find-the-canonical-link-in-a-file-type-file-beautifulsoup
+# https://stackoverflow.com/questions/56427277/how-to-extract-the-value-of-the-datetime-attribute-in-a-time-tag-using-xpath-or
+def writer(selector):
+    return selector.css(".z--font-bold ").css("*::text").get().strip()
+
+
+def shares_count(selector):
+    shares = selector.css(".tec--toolbar__item::text").get()
+
+    if shares:
+        return int((shares).strip().split(" ")[0])
+    else:
+        return 0
+
+
+def comments_count(selector):
+    count = selector.css("button.tec--btn::attr(data-count)").get()
+    if count:
+        return int(count)
+    else:
+        return 0
+
+
+def summary(selector):
+    return "".join(
+        selector.css(
+            "div.tec--article__body > p:nth-child(1) *::text"
+        ).getall()
+    )
+
+
+def sources(selector):
+    sources_text = selector.css(
+        "div.z--mb-16 > div > a.tec--badge::text"
+    ).getall()
+    return [source.strip() for source in sources_text]
+
+
+def categories(selector):
+    categories_text = selector.css("div#js-categories > a::text").getall()
+    return [category.strip() for category in categories_text]
+
+
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+
+    return {
+        "url": selector.css("link[rel=canonical]::attr(href)").get(),
+        "title": selector.css(".tec--article__header__title::text").get(),
+        "timestamp": selector.css("time::attr(datetime)").get(),
+        "writer": writer(selector),
+        "shares_count": shares_count(selector),
+        "comments_count": comments_count(selector),
+        "summary": summary(selector),
+        "sources": sources(selector),
+        "categories": categories(selector),
+    }
 
 
 # Requisito 5
