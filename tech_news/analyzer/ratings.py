@@ -22,4 +22,12 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    result = find_news()
+    list_category = []
+
+    for notice in result:
+        list_category += notice["categories"]
+
+    list_category.sort()
+
+    return list_category[:5]
