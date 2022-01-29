@@ -13,6 +13,7 @@ def search_by_title(title):
 
 
 # Requisito 7
+# https://www.w3schools.com/python/python_datetime.asp
 def search_by_date(date):
     result = find_news()
     list_title_url = []
@@ -28,7 +29,13 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    result = find_news()
+    list_title_url = []
+    for notice in result:
+        for fonte in notice["sources"]:
+            if fonte.upper() == source.upper():
+                list_title_url.append((notice["title"], notice["url"]))
+    return list_title_url
 
 
 # Requisito 9
